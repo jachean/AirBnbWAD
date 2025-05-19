@@ -3,7 +3,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace AirBnbWAD.Data
 {
-    public class DataContext(DbContextOptions<DataContext> options) : DbContext(options)
+    using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+    using Microsoft.AspNetCore.Identity;
+
+    public class DataContext(DbContextOptions<DataContext> options)
+        : IdentityDbContext<IdentityUser>(options)
     {
         public DbSet<User> User { get; set; }
         public DbSet<Property> Properties { get; set; }

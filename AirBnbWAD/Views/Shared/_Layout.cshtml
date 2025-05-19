@@ -1,4 +1,8 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Identity
+@inject UserManager<IdentityUser> UserManager
+@inherits Microsoft.AspNetCore.Mvc.Razor.RazorPage<dynamic>
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8">
@@ -6,9 +10,7 @@
     <title>@ViewData["Title"] - Airbnb</title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true">
-
 </head>
 <body>
 
@@ -18,6 +20,7 @@
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
+
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav me-auto">
                     <li class="nav-item">
@@ -33,9 +36,27 @@
                         <a class="nav-link" href="/Home/Contact">Contact</a>
                     </li>
                 </ul>
-                <div class="d-flex">
-                    <a class="btn custom-btn-outline me-2" asp-controller="Home" asp-action="Login">Login</a>
-                    <a class="btn custom-btn" asp-controller="Home" asp-action="Register">Register</a>
+
+                <div class="d-flex align-items-center">
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        var user = await UserManager.GetUserAsync(User);
+                        <span class="me-3">Hello, @user.UserName</span>
+
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <a class="btn btn-warning me-2" href="/Admin/Dashboard">Admin</a>
+                        }
+
+                        <form asp-controller="Account" asp-action="Logout" method="post" class="mb-0">
+                            <button type="submit" class="btn btn-outline-danger">Logout</button>
+                        </form>
+                    }
+                    else
+                    {
+                        <a class="btn custom-btn-outline me-2" asp-controller="Account" asp-action="Login">Login</a>
+                        <a class="btn custom-btn" asp-controller="Account" asp-action="Register">Register</a>
+                    }
                 </div>
             </div>
         </div>
@@ -45,13 +66,11 @@
         @RenderBody()
     </div>
 
-
     <footer class="bg-light text-center text-lg-start fixed-bottom">
         <div class="text-center p-3">
             © 2025 - Airbnb - <a class="text-dark" href="/Home/Privacy">Privacy</a>
         </div>
     </footer>
-
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
